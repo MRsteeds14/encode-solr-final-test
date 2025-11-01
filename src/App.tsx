@@ -4,6 +4,7 @@ import { Toaster, toast } from 'sonner'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import { Sun, Lightning, ChartLine, ArrowsLeftRight, UserCircle, Coins, CurrencyCircleDollar } from '@phosphor-icons/react'
+import solrarcLogo from '@/assets/images/SOLRARC.JPG'
 
 import { WalletButton } from '@/components/wallet/WalletButton'
 import { StatsCard } from '@/components/dashboard/StatsCard'
@@ -209,7 +210,7 @@ function App() {
         <div className="max-w-2xl w-full text-center space-y-8">
           <div className="flex items-center justify-center">
             <div className="p-4 bg-primary/10 rounded-2xl">
-              <Sun size={64} weight="fill" className="text-primary" />
+              <img src={solrarcLogo} alt="SOLR-ARC Logo" className="w-16 h-16 object-contain" />
             </div>
           </div>
           
