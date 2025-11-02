@@ -274,7 +274,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-60">
         <Web3Background />
       </div>
       
