@@ -37,7 +37,7 @@ export function StatsCard({ title, value, subtitle, icon, trend, glowColor = 'pr
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h3 className="text-3xl font-bold tracking-tight mb-1">{value}</h3>
+            <h3 className="text-3xl font-bold tracking-tight mb-1 text-[oklch(0.85_0.25_145)]">{value}</h3>
           </motion.div>
           {subtitle && (
             <p className="text-xs text-muted-foreground">{subtitle}</p>
