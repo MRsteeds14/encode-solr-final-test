@@ -51,11 +51,11 @@ export function WalletButton({ wallet, onConnect, onDisconnect }: WalletButtonPr
         onClick={() => setIsOpen(!isOpen)}
         variant="outline"
         size="default"
-        className="gap-1.5 sm:gap-2 font-mono text-xs sm:text-sm w-full sm:w-auto justify-between sm:justify-center"
+        className="gap-1.5 sm:gap-2 font-mono text-xs sm:text-sm w-full sm:w-auto justify-between sm:justify-center bg-black/60 text-[oklch(0.85_0.25_140)] border-[oklch(0.85_0.25_140)]/30 hover:bg-black/70 hover:text-[oklch(0.90_0.25_140)] hover:border-[oklch(0.85_0.25_140)]/50"
       >
-        <CheckCircle size={18} weight="fill" className="text-primary flex-shrink-0" />
+        <CheckCircle size={18} weight="fill" className="text-[oklch(0.85_0.25_140)] flex-shrink-0" />
         <span className="truncate">{shortenAddress(wallet.address || '')}</span>
-        <Badge variant="secondary" className="ml-1 hidden xs:inline-flex">
+        <Badge variant="secondary" className="ml-1 hidden xs:inline-flex bg-black/40 text-[oklch(0.85_0.25_140)] border-[oklch(0.85_0.25_140)]/20">
           {wallet.network}
         </Badge>
       </Button>
