@@ -12,13 +12,13 @@
   --foreground: oklch(98.4% 0.003 247.858);
 
   --card: oklch(0.96 0.008 140);
-  --card-foreground: oklch(0.20 0.12 140);
+  --card-foreground: oklch(98.4% 0.003 247.858);
   
   --popover: oklch(0.99 0.003 140);
   --popover-foreground: oklch(0.20 0.12 140);
 
-  --primary: oklch(76.8% 0.233 130.85);
-  --primary-foreground: oklch(0.98 0.005 140);
+  --primary: oklch(64.8% 0.2 131.684);
+  --primary-foreground: oklch(96.8% 0.007 247.896);
 
   --secondary: oklch(0.88 0.08 140);
   --secondary-foreground: oklch(92.9% 0.013 255.508);
@@ -26,8 +26,8 @@
   --muted: oklch(0.92 0.02 140);
   --muted-foreground: oklch(0.45 0.08 140);
 
-  --accent: oklch(0.45 0.15 120);
-  --accent-foreground: oklch(0.98 0.005 140);
+  --accent: oklch(64.8% 0.2 131.684);
+  --accent-foreground: oklch(96.9% 0.015 12.422);
 
   --destructive: oklch(0.50 0.20 15);
   --destructive-foreground: oklch(0.98 0.005 140);
@@ -40,7 +40,7 @@
   --glow-secondary: oklch(0.55 0.20 210);
   --glow-accent: oklch(0.70 0.18 330);
 
-  --radius: 0rem;
+  --radius: 1rem;
 
   --font-sans: IBM Plex Sans;
   --font-mono: Fira Code;
