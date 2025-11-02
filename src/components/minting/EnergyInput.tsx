@@ -41,10 +41,13 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
   }
 
   return (
-    <Card className="p-6">
+    <Card className="glass-card p-6 border-border/50">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-primary/10 rounded-lg">
-          <Lightning size={24} weight="fill" className="text-primary" />
+        <div className="relative">
+          <div className="absolute inset-0 bg-primary/30 blur-lg rounded-lg"></div>
+          <div className="relative p-3 bg-primary/10 rounded-lg border border-primary/30">
+            <Lightning size={24} weight="fill" className="text-primary drop-shadow-[0_0_10px_oklch(0.65_0.25_265)]" />
+          </div>
         </div>
         <div>
           <h3 className="text-lg font-semibold">Submit Energy Generation</h3>
@@ -64,7 +67,7 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
             min="0"
             step="0.01"
             disabled={loading}
-            className="mt-2"
+            className="mt-2 bg-background/50 border-border/50 focus:border-primary focus:ring-primary"
           />
           <div className="flex items-center justify-between mt-2 text-xs">
             <span className="text-muted-foreground">
@@ -79,10 +82,10 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
           </div>
         </div>
 
-        <div className="bg-muted/50 rounded-lg p-4 space-y-2">
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">You will receive:</span>
-            <span className="font-semibold">{inputValue.toFixed(2)} sARC</span>
+            <span className="font-semibold text-primary">{inputValue.toFixed(2)} sARC</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Estimated value:</span>
@@ -93,17 +96,20 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
         <Button
           onClick={handleSubmit}
           disabled={!isValid || loading}
-          className="w-full"
+          className="w-full bg-primary hover:bg-primary/90 relative overflow-hidden group"
           size="lg"
         >
-          {loading ? (
-            <>Processing...</>
-          ) : (
-            <>
-              <Lightning size={20} weight="fill" className="mr-2" />
-              Mint sARC Tokens
-            </>
-          )}
+          <span className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity"></span>
+          <span className="relative flex items-center justify-center">
+            {loading ? (
+              <>Processing...</>
+            ) : (
+              <>
+                <Lightning size={20} weight="fill" className="mr-2" />
+                Mint sARC Tokens
+              </>
+            )}
+          </span>
         </Button>
       </div>
     </Card>

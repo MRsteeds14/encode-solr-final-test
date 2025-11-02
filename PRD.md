@@ -69,41 +69,42 @@ This is a demo-ready application showcasing energy tokenization with simulated w
 - **Invalid Data**: Form validation prevents negative numbers, decimals beyond 2 places, and non-numeric input
 
 ## Design Direction
-The design should evoke **trust through transparency** and **optimism through clean energy**, feeling modern, professional, and slightly futuristic. The interface should feel calm and spacious rather than cluttered, with purposeful use of animation to guide attention during AI agent processing. It should communicate technological sophistication while remaining approachable to non-technical solar producers.
+The design should evoke **cutting-edge innovation and trust through futuristic aesthetics**, feeling modern, sophisticated, and Web3-native. The interface embraces a dark theme with glowing neon accents inspired by modern fintech platforms, featuring glassmorphism effects, ambient particle animations, and purposeful use of blur and glow to create depth. It should communicate **technological sophistication** while remaining approachable, with smooth animations and interactive elements that reward user engagement.
 
 ## Color Selection
-**Triadic color scheme** balancing renewable energy (green), blockchain/trust (blue), and value/reward (amber), creating an energetic yet professional palette.
+**Triadic + Neon accent scheme** balancing blockchain technology (purple/blue), energy (primary teal), and value (pink/magenta), creating a futuristic cyberpunk-inspired palette.
 
-- **Primary Color**: Deep Emerald Green `oklch(0.55 0.15 160)` - Represents solar/renewable energy, growth, and sustainability
-- **Secondary Colors**: Ocean Blue `oklch(0.50 0.15 240)` for blockchain elements; Slate Gray `oklch(0.35 0.02 240)` for backgrounds
-- **Accent Color**: Amber Gold `oklch(0.70 0.15 80)` - Highlights USDC earnings and rewards, conveys value and achievement
+- **Primary Color**: Electric Purple `oklch(0.65 0.25 265)` - Represents blockchain technology, innovation, and digital transformation
+- **Secondary Colors**: Cyan Blue `oklch(0.55 0.20 210)` for AI/automation elements; Deep Space `oklch(0.08 0.02 265)` for backgrounds
+- **Accent Color**: Neon Pink `oklch(0.70 0.18 330)` - Highlights USDC earnings and rewards, creates energy and excitement
 - **Foreground/Background Pairings**:
-  - Background (Dark Slate `oklch(0.15 0.02 240)`): Light foreground `oklch(0.95 0 0)` - Ratio 11.2:1 ✓
-  - Card (Charcoal `oklch(0.22 0.02 240)`): Light foreground `oklch(0.95 0 0)` - Ratio 9.1:1 ✓
-  - Primary (Emerald Green): White text `oklch(1 0 0)` - Ratio 4.6:1 ✓
-  - Secondary (Ocean Blue): White text `oklch(1 0 0)` - Ratio 5.2:1 ✓
-  - Accent (Amber Gold): Dark text `oklch(0.15 0 0)` - Ratio 8.4:1 ✓
-  - Muted (Dark Gray `oklch(0.30 0.01 240)`): Light muted foreground `oklch(0.70 0.02 240)` - Ratio 4.8:1 ✓
+  - Background (Deep Space `oklch(0.08 0.02 265)`): Light foreground `oklch(0.98 0 0)` - Ratio 15.8:1 ✓
+  - Card (Dark Purple `oklch(0.12 0.03 265)`): Light foreground `oklch(0.98 0 0)` - Ratio 13.2:1 ✓
+  - Primary (Electric Purple): White text `oklch(1 0 0)` - Ratio 5.1:1 ✓
+  - Secondary (Cyan Blue): White text `oklch(1 0 0)` - Ratio 5.8:1 ✓
+  - Accent (Neon Pink): White text `oklch(1 0 0)` - Ratio 4.7:1 ✓
+  - Muted (Charcoal `oklch(0.18 0.02 265)`): Light muted foreground `oklch(0.65 0.02 265)` - Ratio 5.2:1 ✓
 
 ## Font Selection
-Typefaces should convey **modern technology with human warmth**, balancing the technical nature of blockchain with the human impact of renewable energy. Using **Inter** for its excellent screen legibility and neutral professionalism, paired with **JetBrains Mono** for wallet addresses and transaction hashes to maintain technical authenticity.
+Typefaces should convey **sleek modernity and precision**, balancing cutting-edge technology with readability. Using **Inter** for its geometric clarity and tech-forward personality, paired with **JetBrains Mono** for technical elements to maintain authenticity.
 
 - **Typographic Hierarchy**:
-  - H1 (Page Title): Inter Bold / 36px / -0.02em tracking / Leading 1.2
-  - H2 (Section Header): Inter Semibold / 24px / -0.01em tracking / Leading 1.3
+  - H1 (Hero Title): Inter Bold / 56px / -0.03em tracking / Leading 1.1 / Gradient text effect
+  - H2 (Section Header): Inter Semibold / 28px / -0.02em tracking / Leading 1.2 / Gradient accent
   - H3 (Card Title): Inter Semibold / 18px / Normal tracking / Leading 1.4
   - Body (Main Text): Inter Regular / 16px / Normal tracking / Leading 1.6
   - Small (Metadata): Inter Medium / 14px / Normal tracking / Leading 1.5
   - Code (Addresses): JetBrains Mono Regular / 14px / Normal tracking / Monospace
 
 ## Animations
-Animations should **guide attention to AI processing states and value creation moments**, creating subtle delight without slowing down task completion. Motion should feel **purposeful and physics-based** - acceleration curves match real-world expectations. Balance between showing progress (loading states) and celebrating success (token minting complete).
+Animations should **create a sense of digital energy and responsiveness**, with glowing effects, smooth transitions, and ambient background motion. Motion feels **fluid and physics-based** with purposeful use of glow/blur effects to enhance the futuristic aesthetic. Celebrate key moments (minting completion, successful redemption) with satisfying visual feedback.
 
-- **Purposeful Meaning**: Use animation to show causation (energy input → agent processing → token minting) and to differentiate between states (loading vs. success vs. error)
+- **Purposeful Meaning**: Glowing animations indicate active processing, pulsing effects draw attention to important state changes, particle effects create ambient energy
 - **Hierarchy of Movement**: 
-  - Critical: AI agent status transitions (300ms spring), token balance updates (400ms ease-out)
-  - Secondary: Card hover states (150ms ease), chart data updates (500ms ease-in-out)
-  - Tertiary: Button interactions (100ms ease), tooltip appearances (200ms ease)
+  - Critical: Agent status transitions (300ms spring + glow), token minting success (500ms with glow burst)
+  - Secondary: Card hover lift (200ms) with glow intensification, chart animations (600ms ease-in-out)
+  - Tertiary: Button interactions (150ms) with subtle glow, icon hover effects (200ms)
+  - Ambient: Background particle animations (continuous low opacity)
 
 ## Component Selection
 - **Components**: 
