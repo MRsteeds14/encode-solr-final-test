@@ -53,7 +53,7 @@ export function TransactionFeed({ transactions }: TransactionFeedProps) {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-semibold capitalize">{tx.type}</span>
-                    <Badge variant={tx.status === 'confirmed' ? 'default' : 'secondary'} className="bg-primary/20 text-primary border-primary/30">
+                    <Badge variant={tx.status === 'confirmed' ? 'default' : 'secondary'} className="bg-[oklch(0.85_0.25_145)]/20 text-[oklch(0.85_0.25_145)] border-[oklch(0.85_0.25_145)]/30">
                       {tx.status}
                     </Badge>
                   </div>
