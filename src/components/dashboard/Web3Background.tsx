@@ -16,40 +16,44 @@ export default function Web3Background() {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', { alpha: true })
     if (!ctx) return
 
     let nodeCount = 25
     let connectionDistance = 250
-    let triangleSize = 8
+    let triangleSize = 10
 
     const updateForScreenSize = () => {
       const width = window.innerWidth
       if (width < 640) {
-        nodeCount = 35
+        nodeCount = 30
         connectionDistance = 180
-        triangleSize = 6
-      } else if (width < 1024) {
-        nodeCount = 40
-        connectionDistance = 200
-        triangleSize = 7
-      } else {
-        nodeCount = 50
-        connectionDistance = 250
         triangleSize = 8
+      } else if (width < 1024) {
+        nodeCount = 35
+        connectionDistance = 200
+        triangleSize = 9
+      } else {
+        nodeCount = 45
+        connectionDistance = 250
+        triangleSize = 10
       }
     }
 
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const dpr = window.devicePixelRatio || 1
+      canvas.width = window.innerWidth * dpr
+      canvas.height = window.innerHeight * dpr
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      ctx.scale(dpr, dpr)
       updateForScreenSize()
       
       nodesRef.current = Array.from({ length: nodeCount }, () => ({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
       }))
     }
     
@@ -57,20 +61,20 @@ export default function Web3Background() {
     window.addEventListener('resize', resizeCanvas)
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight)
 
       nodesRef.current.forEach(node => {
         node.x += node.vx
         node.y += node.vy
 
-        if (node.x < 0 || node.x > canvas.width) node.vx *= -1
-        if (node.y < 0 || node.y > canvas.height) node.vy *= -1
+        if (node.x < 0 || node.x > window.innerWidth) node.vx *= -1
+        if (node.y < 0 || node.y > window.innerHeight) node.vy *= -1
 
-        node.x = Math.max(0, Math.min(canvas.width, node.x))
-        node.y = Math.max(0, Math.min(canvas.height, node.y))
+        node.x = Math.max(0, Math.min(window.innerWidth, node.x))
+        node.y = Math.max(0, Math.min(window.innerHeight, node.y))
       })
 
-      ctx.lineWidth = window.innerWidth < 640 ? 1 : 1.5
+      ctx.lineWidth = window.innerWidth < 640 ? 0.8 : 1
 
       for (let i = 0; i < nodesRef.current.length; i++) {
         for (let j = i + 1; j < nodesRef.current.length; j++) {
@@ -79,8 +83,8 @@ export default function Web3Background() {
           const distance = Math.sqrt(dx * dx + dy * dy)
 
           if (distance < connectionDistance) {
-            const opacity = (1 - distance / connectionDistance) * 0.3
-            ctx.strokeStyle = `rgba(100, 150, 255, ${opacity})`
+            const opacity = (1 - distance / connectionDistance) * 0.15
+            ctx.strokeStyle = `rgba(165, 200, 255, ${opacity})`
             ctx.beginPath()
             ctx.moveTo(nodesRef.current[i].x, nodesRef.current[i].y)
             ctx.lineTo(nodesRef.current[j].x, nodesRef.current[j].y)
@@ -89,18 +93,31 @@ export default function Web3Background() {
         }
       }
 
-      ctx.fillStyle = 'rgba(50, 255, 150, 0.5)'
-      ctx.strokeStyle = 'rgba(50, 255, 150, 0.7)'
-      ctx.lineWidth = window.innerWidth < 640 ? 1.5 : 2
-
       nodesRef.current.forEach(node => {
+        ctx.save()
+        ctx.translate(node.x, node.y)
+
+        ctx.shadowBlur = 15
+        ctx.shadowColor = 'rgba(100, 180, 255, 0.6)'
+        
+        const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, triangleSize)
+        gradient.addColorStop(0, 'rgba(120, 200, 255, 0.4)')
+        gradient.addColorStop(1, 'rgba(80, 160, 255, 0.1)')
+        ctx.fillStyle = gradient
+
         ctx.beginPath()
-        ctx.moveTo(node.x, node.y - triangleSize / 2)
-        ctx.lineTo(node.x - triangleSize / 2, node.y + triangleSize / 2)
-        ctx.lineTo(node.x + triangleSize / 2, node.y + triangleSize / 2)
+        ctx.moveTo(0, -triangleSize / 2)
+        ctx.lineTo(-triangleSize / 2, triangleSize / 2)
+        ctx.lineTo(triangleSize / 2, triangleSize / 2)
         ctx.closePath()
         ctx.fill()
+
+        ctx.shadowBlur = 0
+        ctx.strokeStyle = 'rgba(150, 210, 255, 0.3)'
+        ctx.lineWidth = 1
         ctx.stroke()
+
+        ctx.restore()
       })
 
       animationFrameRef.current = requestAnimationFrame(animate)
@@ -118,19 +135,19 @@ export default function Web3Background() {
 
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-accent/5" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/3 via-background to-accent/3" />
       
       <canvas
         ref={canvasRef}
         className="absolute inset-0 w-full h-full"
-        style={{ mixBlendMode: 'screen' }}
+        style={{ mixBlendMode: 'normal', opacity: 0.85 }}
       />
       
-      <div className="absolute top-1/4 left-1/4 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" 
+      <div className="absolute top-1/4 left-1/4 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-primary/8 rounded-full blur-3xl animate-pulse" 
            style={{ animationDuration: '4s' }} />
-      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-accent/10 rounded-full blur-3xl animate-pulse" 
+      <div className="absolute bottom-1/4 right-1/4 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-accent/8 rounded-full blur-3xl animate-pulse" 
            style={{ animationDuration: '6s', animationDelay: '1s' }} />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" 
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 md:w-72 md:h-72 lg:w-96 lg:h-96 bg-secondary/8 rounded-full blur-3xl animate-pulse" 
            style={{ animationDuration: '5s', animationDelay: '2s' }} />
     </div>
   )
