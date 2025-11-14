@@ -5,11 +5,12 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
- * @title Registry
+ * @title RegistryV2
  * @notice Manages solar producer registrations and production validation
  * @dev Whitelists producers, tracks capacity, validates daily limits
+ * @dev V2: Pre-configures roles for MintingController and AI Agent in constructor
  */
-contract Registry is AccessControl, Pausable {
+contract RegistryV2 is AccessControl, Pausable {
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
     struct Producer {
@@ -36,9 +37,26 @@ contract Registry is AccessControl, Pausable {
     event ProducerRemoved(address indexed producer);
     event ProductionRecorded(address indexed producer, uint256 kwhAmount, uint256 mintedAmount);
 
-    constructor() {
+    /**
+     * @notice Constructor with pre-configured roles
+     * @param _mintingController Address of the MintingController contract
+     * @param _aiAgent Address of the AI Agent wallet
+     * @dev Grants OPERATOR_ROLE to both MintingController and AI Agent
+     * @dev Deployer gets DEFAULT_ADMIN_ROLE and OPERATOR_ROLE
+     */
+    constructor(address _mintingController, address _aiAgent) {
+        require(_mintingController != address(0), "Invalid MintingController address");
+        require(_aiAgent != address(0), "Invalid AI Agent address");
+
+        // Grant admin role to deployer
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(OPERATOR_ROLE, msg.sender);
+
+        // Grant OPERATOR_ROLE to MintingController (for recordProduction)
+        _grantRole(OPERATOR_ROLE, _mintingController);
+
+        // Grant OPERATOR_ROLE to AI Agent (for registerProducer)
+        _grantRole(OPERATOR_ROLE, _aiAgent);
     }
 
     /**

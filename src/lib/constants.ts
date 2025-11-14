@@ -1,9 +1,9 @@
-// Contract Addresses - Deployed November 4, 2025
+// Contract Addresses - Updated with RegistryV2
 export const CONTRACTS = {
   SARC_TOKEN: '0x9604ad29C8fEe0611EcE73a91e192E5d976E2184', // Pre-existing
-  REGISTRY: '0x90b4883040f64aB37678382dE4e0fAa67B1126e1', // Deployed
+  REGISTRY: '0xc9559c5884e53548b3d2362aa694b64519d291ee', // RegistryV2 - Deployed with pre-configured roles
   TREASURY: '0x8825518674A89e28d2C11CA0Ec49024ef6e1E2b2', // Deployed
-  MINTING_CONTROLLER: '0x186c2987F138f3784913e5e42f0cee4512b89C3E', // Deployed
+  MINTING_CONTROLLER: '0xf84748FDDeE07b4d4d483c6291D0D3E97aD61d00', // Deployed
 } as const
 
 export const ARC_TESTNET = {

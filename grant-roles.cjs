@@ -13,8 +13,9 @@
  * 3. Creates a new AI Agent wallet
  * 4. Grants MINTER_ROLE to AI Agent on MintingController
  * 5. Grants OPERATOR_ROLE to AI Agent on MintingController
- * 6. Saves AI wallet credentials to .env.local
- * 7. Verifies all roles are granted successfully
+ * 6. Grants OPERATOR_ROLE to AI Agent on Registry (for registerProducer)
+ * 7. Saves AI wallet credentials to .env.local
+ * 8. Verifies all roles are granted successfully
  */
 
 const { ethers } = require('ethers');
@@ -267,8 +268,29 @@ async function main() {
       'AI Agent has OPERATOR_ROLE on MintingController'
     );
 
-    // Step 9: Save AI wallet to .env.local
-    log.step('Step 8: Saving AI Agent Credentials');
+    // Step 9: Grant OPERATOR_ROLE to AI Agent on Registry
+    log.step('Step 8: Granting OPERATOR_ROLE to AI Agent (on Registry)');
+
+    const hasRole5 = await registry.hasRole(CONFIG.roles.OPERATOR_ROLE, aiWallet.address);
+
+    if (hasRole5) {
+      log.info('Role already granted, skipping...');
+    } else {
+      log.info('Granting role...');
+      log.info('This allows the AI Agent to call registerProducer() on Registry');
+      const tx5 = await registry.grantRole(CONFIG.roles.OPERATOR_ROLE, aiWallet.address);
+      await waitForTx(tx5, 'Grant OPERATOR_ROLE to AI Agent on Registry');
+    }
+
+    await verifyRole(
+      registry,
+      CONFIG.roles.OPERATOR_ROLE,
+      aiWallet.address,
+      'AI Agent has OPERATOR_ROLE on Registry'
+    );
+
+    // Step 10: Save AI wallet to .env.local
+    log.step('Step 9: Saving AI Agent Credentials');
 
     const envPath = path.join(__dirname, '.env.local');
     let envContent = '';
@@ -306,7 +328,8 @@ async function main() {
     console.log('✅ 3. AI Agent Wallet Created');
     console.log('✅ 4. AI Agent → MintingController MINTER_ROLE');
     console.log('✅ 5. AI Agent → MintingController OPERATOR_ROLE');
-    console.log('✅ 6. Credentials saved to .env.local');
+    console.log('✅ 6. AI Agent → Registry OPERATOR_ROLE');
+    console.log('✅ 7. Credentials saved to .env.local');
     console.log('');
     console.log('='.repeat(70));
     console.log('');

@@ -1,0 +1,16 @@
+name = "solr-arc-pog-agent"
+main = "index.ts"
+compatibility_date = "2024-11-01"
+node_compat = true
+
+# Environment variables (public)
+[vars]
+ARC_RPC_URL = "https://rpc.testnet.arc.network"
+MINTING_CONTROLLER_ADDRESS = "0xYOUR_NEW_MINTING_CONTROLLER_ADDRESS"
+REGISTRY_ADDRESS = "0xc9559c5884e53548b3d2362aa694b64519d291ee"
+ARC_CHAIN_ID = "5042002"
+
+# Secrets (set via: wrangler secret put <NAME>)
+# AI_AGENT_PRIVATE_KEY - Private key of AI Agent wallet
+# PINATA_JWT - Pinata IPFS service JWT token
+# NREL_API_KEY - NREL Solar API key (optional)

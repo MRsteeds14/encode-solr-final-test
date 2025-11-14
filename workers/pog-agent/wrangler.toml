@@ -1,12 +1,14 @@
 name = "solr-arc-pog-agent"
 main = "index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
 
-# Environment variables (secrets should be set via: wrangler secret put VARIABLE_NAME)
+# Environment variables (public)
 [vars]
 ARC_RPC_URL = "https://rpc.testnet.arc.network"
-MINTING_CONTROLLER_ADDRESS = "" # Fill after deployment
-REGISTRY_ADDRESS = "" # Fill after deployment
+MINTING_CONTROLLER_ADDRESS = "0xf84748FDDeE07b4d4d483c6291D0D3E97aD61d00"
+REGISTRY_ADDRESS = "0xc9559c5884e53548b3d2362aa694b64519d291ee"
+ARC_CHAIN_ID = "5042002"
 
 # Set these secrets via CLI:
 # wrangler secret put AI_AGENT_PRIVATE_KEY
