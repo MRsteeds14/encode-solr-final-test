@@ -18,15 +18,15 @@ export function GlowOrb({ size = 200, color = 'primary', className = '' }: GlowO
   }
 
   return (
-    <div className={`relative ${className}`} style={{ width: size, height: size }}>
+    <div className={`relative shrink-0 ${className}`} style={{ width: size, height: size }}>
       <div
-        className={`absolute inset-0 rounded-full bg-gradient-radial ${colors[color]} blur-2xl animate-glow`}
+        className={`absolute inset-0 rounded-full bg-gradient-radial ${colors[color]} blur-xl md:blur-2xl animate-glow`}
       />
       <div
-        className={`absolute inset-4 rounded-full bg-gradient-radial ${colors[color]} blur-xl`}
+        className={`absolute inset-2 md:inset-4 rounded-full bg-gradient-radial ${colors[color]} blur-lg md:blur-xl`}
       />
       <div
-        className={`absolute inset-8 rounded-full bg-gradient-radial ${colors[color]} shadow-2xl ${glowColors[color]}`}
+        className={`absolute inset-4 md:inset-8 rounded-full bg-gradient-radial ${colors[color]} shadow-xl md:shadow-2xl ${glowColors[color]}`}
       />
     </div>
   )

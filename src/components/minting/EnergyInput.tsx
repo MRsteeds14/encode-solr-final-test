@@ -41,23 +41,23 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
   }
 
   return (
-    <Card className="glass-card p-6 border-border/50">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="relative">
+    <Card className="glass-card p-4 md:p-6 border-border/50">
+      <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <div className="relative flex-shrink-0">
           <div className="absolute inset-0 bg-primary/30 blur-lg rounded-lg"></div>
-          <div className="relative p-3 bg-primary/10 rounded-lg border border-primary/30">
-            <Lightning size={24} weight="fill" className="text-primary drop-shadow-[0_0_10px_oklch(0.65_0.25_265)]" />
+          <div className="relative p-2 md:p-3 bg-primary/10 rounded-lg border border-primary/30">
+            <Lightning size={20} weight="fill" className="md:w-6 md:h-6 text-primary drop-shadow-[0_0_10px_oklch(0.65_0.25_265)]" />
           </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">Submit Energy Generation</h3>
-          <p className="text-sm text-muted-foreground">Convert your solar energy to sARC tokens</p>
+        <div className="min-w-0">
+          <h3 className="text-base md:text-lg font-semibold truncate">Submit Energy Generation</h3>
+          <p className="text-xs md:text-sm text-muted-foreground">Convert solar to sARC tokens</p>
         </div>
       </div>
 
       <div className="space-y-4">
         <div>
-          <Label htmlFor="kwh-input">Energy Generated (kWh)</Label>
+          <Label htmlFor="kwh-input" className="text-sm">Energy Generated (kWh)</Label>
           <Input
             id="kwh-input"
             type="number"
@@ -67,27 +67,28 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
             min="0"
             step="0.01"
             disabled={loading}
-            className="mt-2 bg-background/50 border-border/50 focus:border-primary focus:ring-primary"
+            className="mt-2 bg-background/50 border-border/50 focus:border-primary focus:ring-primary text-base"
           />
-          <div className="flex items-center justify-between mt-2 text-xs">
-            <span className="text-muted-foreground">
+          <div className="flex items-center justify-between mt-2 text-xs gap-2">
+            <span className="text-muted-foreground truncate">
               Daily remaining: {remaining.toFixed(2)} kWh
             </span>
             {inputValue > remaining && (
-              <span className="text-destructive flex items-center gap-1">
-                <Warning size={14} weight="fill" />
-                Exceeds daily limit
+              <span className="text-destructive flex items-center gap-1 flex-shrink-0">
+                <Warning size={12} weight="fill" className="md:w-3.5 md:h-3.5" />
+                <span className="hidden sm:inline">Exceeds limit</span>
+                <span className="sm:hidden">Limit</span>
               </span>
             )}
           </div>
         </div>
 
-        <div className="bg-primary/5 border border-primary/20 rounded-lg p-4 space-y-2">
-          <div className="flex justify-between text-sm">
+        <div className="bg-primary/5 border border-primary/20 rounded-lg p-3 md:p-4 space-y-2">
+          <div className="flex justify-between text-xs md:text-sm">
             <span className="text-muted-foreground">You will receive:</span>
             <span className="font-semibold text-primary">{inputValue.toFixed(2)} sARC</span>
           </div>
-          <div className="flex justify-between text-sm">
+          <div className="flex justify-between text-xs md:text-sm">
             <span className="text-muted-foreground">Estimated value:</span>
             <span className="font-semibold text-accent">${(inputValue * 0.10).toFixed(2)} USDC</span>
           </div>
@@ -96,7 +97,7 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
         <Button
           onClick={handleSubmit}
           disabled={!isValid || loading}
-          className="w-full bg-primary hover:bg-primary/90 relative overflow-hidden group"
+          className="w-full bg-primary hover:bg-primary/90 relative overflow-hidden group text-sm md:text-base"
           size="lg"
         >
           <span className="absolute inset-0 bg-gradient-to-r from-primary via-secondary to-primary opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -105,7 +106,7 @@ export function EnergyInput({ onSubmit, dailyUsed }: EnergyInputProps) {
               <>Processing...</>
             ) : (
               <>
-                <Lightning size={20} weight="fill" className="mr-2" />
+                <Lightning size={18} weight="fill" className="mr-2 md:w-5 md:h-5" />
                 Mint sARC Tokens
               </>
             )}

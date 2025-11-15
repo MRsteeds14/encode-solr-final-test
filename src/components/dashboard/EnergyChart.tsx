@@ -8,11 +8,11 @@ interface EnergyChartProps {
 
 export function EnergyChart({ data }: EnergyChartProps) {
   return (
-    <Card className="glass-card p-6 border-border/50">
-      <h3 className="text-lg font-semibold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Energy Generation (Last 30 Days)</h3>
-      <div className="h-[300px]">
+    <Card className="glass-card p-4 md:p-6 border-border/50">
+      <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Energy Generation (Last 30 Days)</h3>
+      <div className="h-[250px] md:h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
+          <AreaChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
             <defs>
               <linearGradient id="colorKwh" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="oklch(0.65 0.25 265)" stopOpacity={0.6}/>
@@ -23,16 +23,17 @@ export function EnergyChart({ data }: EnergyChartProps) {
             <XAxis 
               dataKey="date" 
               stroke="oklch(0.65 0.02 265)"
-              tick={{ fontSize: 12, fill: 'oklch(0.65 0.02 265)' }}
+              tick={{ fontSize: 10, fill: 'oklch(0.65 0.02 265)' }}
               tickFormatter={(value) => {
                 const date = new Date(value)
                 return `${date.getMonth() + 1}/${date.getDate()}`
               }}
+              interval="preserveStartEnd"
             />
             <YAxis 
               stroke="oklch(0.65 0.02 265)"
-              tick={{ fontSize: 12, fill: 'oklch(0.65 0.02 265)' }}
-              label={{ value: 'kWh', angle: -90, position: 'insideLeft', fill: 'oklch(0.65 0.02 265)' }}
+              tick={{ fontSize: 10, fill: 'oklch(0.65 0.02 265)' }}
+              width={40}
             />
             <Tooltip 
               contentStyle={{ 
@@ -41,7 +42,9 @@ export function EnergyChart({ data }: EnergyChartProps) {
                 borderRadius: '12px',
                 color: 'oklch(0.98 0 0)',
                 backdropFilter: 'blur(20px)',
-                boxShadow: '0 0 20px oklch(0.65 0.25 265 / 0.2)'
+                boxShadow: '0 0 20px oklch(0.65 0.25 265 / 0.2)',
+                fontSize: '12px',
+                padding: '8px 12px'
               }}
               labelFormatter={(value) => new Date(value).toLocaleDateString()}
               formatter={(value: number) => [`${value} kWh`, 'Generated']}
@@ -50,7 +53,7 @@ export function EnergyChart({ data }: EnergyChartProps) {
               type="monotone" 
               dataKey="kwh" 
               stroke="oklch(0.65 0.25 265)" 
-              strokeWidth={3}
+              strokeWidth={2}
               fillOpacity={1} 
               fill="url(#colorKwh)" 
             />

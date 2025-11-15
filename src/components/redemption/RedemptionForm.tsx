@@ -42,34 +42,34 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
   }
 
   return (
-    <Card className="glass-card p-6 border-border/50">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="relative">
+    <Card className="glass-card p-4 md:p-6 border-border/50">
+      <div className="flex items-center gap-2 md:gap-3 mb-4 md:mb-6">
+        <div className="relative flex-shrink-0">
           <div className="absolute inset-0 bg-accent/30 blur-lg rounded-lg"></div>
-          <div className="relative p-3 bg-accent/10 rounded-lg border border-accent/30">
-            <CurrencyCircleDollar size={24} weight="fill" className="text-accent drop-shadow-[0_0_10px_oklch(0.70_0.18_330)]" />
+          <div className="relative p-2 md:p-3 bg-accent/10 rounded-lg border border-accent/30">
+            <CurrencyCircleDollar size={20} weight="fill" className="md:w-6 md:h-6 text-accent drop-shadow-[0_0_10px_oklch(0.70_0.18_330)]" />
           </div>
         </div>
-        <div>
-          <h3 className="text-lg font-semibold">Redeem sARC for USDC</h3>
-          <p className="text-sm text-muted-foreground">Convert your tokens to stablecoin</p>
+        <div className="min-w-0">
+          <h3 className="text-base md:text-lg font-semibold truncate">Redeem sARC for USDC</h3>
+          <p className="text-xs md:text-sm text-muted-foreground">Convert tokens to stablecoin</p>
         </div>
       </div>
 
       <div className="space-y-4">
-        <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">Your Balance</span>
-            <span className="text-lg font-bold text-primary">{formatNumber(balance)} sARC</span>
+        <div className="bg-secondary/5 border border-secondary/20 rounded-lg p-3 md:p-4">
+          <div className="flex justify-between items-center mb-2 gap-2">
+            <span className="text-xs md:text-sm text-muted-foreground">Your Balance</span>
+            <span className="text-base md:text-lg font-bold text-primary truncate">{formatNumber(balance)} sARC</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">Current Rate</span>
-            <span className="text-sm font-semibold">1 sARC = ${EXCHANGE_RATE} USDC</span>
+          <div className="flex justify-between items-center gap-2">
+            <span className="text-xs md:text-sm text-muted-foreground">Current Rate</span>
+            <span className="text-xs md:text-sm font-semibold">1 sARC = ${EXCHANGE_RATE} USDC</span>
           </div>
         </div>
 
         <div>
-          <Label htmlFor="sarc-input">Amount to Redeem (sARC)</Label>
+          <Label htmlFor="sarc-input" className="text-sm">Amount to Redeem (sARC)</Label>
           <div className="relative mt-2">
             <Input
               id="sarc-input"
@@ -80,12 +80,12 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
               min="0"
               step="0.01"
               disabled={loading || balance === 0}
-              className="bg-background/50 border-border/50 focus:border-accent focus:ring-accent"
+              className="bg-background/50 border-border/50 focus:border-accent focus:ring-accent text-base pr-16"
             />
             <Button
               variant="ghost"
               size="sm"
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-7 text-accent hover:text-accent/80"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-6 md:h-7 text-xs md:text-sm text-accent hover:text-accent/80"
               onClick={() => setAmount(balance.toString())}
               disabled={loading || balance === 0}
             >
@@ -95,14 +95,14 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
         </div>
 
         <div className="flex items-center justify-center py-2">
-          <ArrowsLeftRight size={24} className="text-muted-foreground animate-pulse" weight="bold" />
+          <ArrowsLeftRight size={20} className="md:w-6 md:h-6 text-muted-foreground animate-pulse" weight="bold" />
         </div>
 
-        <div className="bg-accent/10 border-2 border-accent/30 rounded-lg p-4 relative overflow-hidden">
+        <div className="bg-accent/10 border-2 border-accent/30 rounded-lg p-3 md:p-4 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent"></div>
           <div className="relative">
-            <div className="text-sm text-muted-foreground mb-1">You will receive</div>
-            <div className="text-3xl font-bold text-accent drop-shadow-[0_0_10px_oklch(0.70_0.18_330)]">
+            <div className="text-xs md:text-sm text-muted-foreground mb-1">You will receive</div>
+            <div className="text-2xl md:text-3xl font-bold text-accent drop-shadow-[0_0_10px_oklch(0.70_0.18_330)] break-words">
               {formatCurrency(usdcAmount)}
             </div>
             <div className="text-xs text-muted-foreground mt-1">USDC on Arc Testnet</div>
@@ -112,7 +112,7 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
         <Button
           onClick={handleRedeem}
           disabled={!isValid || loading || balance === 0}
-          className="w-full bg-accent hover:bg-accent/90 relative overflow-hidden group"
+          className="w-full bg-accent hover:bg-accent/90 relative overflow-hidden group text-sm md:text-base"
           size="lg"
         >
           <span className="absolute inset-0 bg-gradient-to-r from-accent via-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity"></span>
@@ -120,10 +120,10 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
             {loading ? (
               <>Processing...</>
             ) : balance === 0 ? (
-              <>No Balance Available</>
+              <>No Balance</>
             ) : (
               <>
-                <CurrencyCircleDollar size={20} weight="fill" className="mr-2" />
+                <CurrencyCircleDollar size={18} weight="fill" className="mr-2 md:w-5 md:h-5" />
                 Redeem for USDC
               </>
             )}
@@ -131,7 +131,7 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
         </Button>
 
         {balance === 0 && (
-          <p className="text-xs text-center text-muted-foreground">
+          <p className="text-xs text-center text-muted-foreground px-2">
             Mint some sARC tokens first to redeem them for USDC
           </p>
         )}

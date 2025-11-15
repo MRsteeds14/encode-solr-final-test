@@ -312,44 +312,44 @@ function App() {
         <Web3Background />
         <Toaster position="top-right" />
         
-        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+        <div className="relative z-10 min-h-screen flex items-center justify-center p-4 sm:p-6 md:p-8">
           <div className="max-w-6xl w-full">
-            <div className="text-center space-y-12">
+            <div className="text-center space-y-8 md:space-y-12">
               <div className="relative inline-block">
-                <GlowOrb size={280} color="primary" className="mx-auto animate-glow" />
+                <GlowOrb size={window.innerWidth < 640 ? 180 : window.innerWidth < 768 ? 220 : 280} color="primary" className="mx-auto animate-glow" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Sun size={120} weight="fill" className="text-primary drop-shadow-[0_0_30px_oklch(0.65_0.25_265)]" />
+                  <Sun size={window.innerWidth < 640 ? 70 : window.innerWidth < 768 ? 90 : 120} weight="fill" className="text-primary drop-shadow-[0_0_20px_oklch(0.65_0.25_265)] md:drop-shadow-[0_0_30px_oklch(0.65_0.25_265)]" />
                 </div>
               </div>
               
-              <div className="space-y-6">
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-secondary bg-clip-text text-transparent">
+              <div className="space-y-4 md:space-y-6 px-2">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight bg-gradient-to-r from-foreground via-primary to-secondary bg-clip-text text-transparent leading-tight">
                   Revolutionizing Solar Energy
                 </h1>
-                <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-2">
                   AI-Powered tokenization platform turning solar energy into digital assets with blockchain-class security, AI-driven automation, and instant USDC settlement
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto">
-                <div className="glass-card p-8 group hover:scale-105 transition-transform duration-300">
-                  <Lightning size={48} weight="fill" className="text-primary mb-4 drop-shadow-[0_0_15px_oklch(0.65_0.25_265)] group-hover:animate-glow" />
-                  <h3 className="font-semibold text-lg mb-2">Instant Tokenization</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 text-left max-w-4xl mx-auto">
+                <div className="glass-card p-5 md:p-8 group hover:scale-105 transition-transform duration-300">
+                  <Lightning size={window.innerWidth < 640 ? 36 : 48} weight="fill" className="text-primary mb-3 md:mb-4 drop-shadow-[0_0_10px_oklch(0.65_0.25_265)] md:drop-shadow-[0_0_15px_oklch(0.65_0.25_265)] group-hover:animate-glow" />
+                  <h3 className="font-semibold text-base md:text-lg mb-2">Instant Tokenization</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                     Convert solar generation to sARC tokens with AI-powered validation in seconds
                   </p>
                 </div>
-                <div className="glass-card p-8 group hover:scale-105 transition-transform duration-300">
-                  <CurrencyCircleDollar size={48} weight="fill" className="text-accent mb-4 drop-shadow-[0_0_15px_oklch(0.70_0.18_330)] group-hover:animate-glow" />
-                  <h3 className="font-semibold text-lg mb-2">USDC Settlement</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                <div className="glass-card p-5 md:p-8 group hover:scale-105 transition-transform duration-300">
+                  <CurrencyCircleDollar size={window.innerWidth < 640 ? 36 : 48} weight="fill" className="text-accent mb-3 md:mb-4 drop-shadow-[0_0_10px_oklch(0.70_0.18_330)] md:drop-shadow-[0_0_15px_oklch(0.70_0.18_330)] group-hover:animate-glow" />
+                  <h3 className="font-semibold text-base md:text-lg mb-2">USDC Settlement</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                     Seamless redemption to USDC on Arc blockchain with transparent rates
                   </p>
                 </div>
-                <div className="glass-card p-8 group hover:scale-105 transition-transform duration-300">
-                  <ChartLine size={48} weight="fill" className="text-secondary mb-4 drop-shadow-[0_0_15px_oklch(0.55_0.20_210)] group-hover:animate-glow" />
-                  <h3 className="font-semibold text-lg mb-2">AI Automation</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                <div className="glass-card p-5 md:p-8 group hover:scale-105 transition-transform duration-300 sm:col-span-2 md:col-span-1">
+                  <ChartLine size={window.innerWidth < 640 ? 36 : 48} weight="fill" className="text-secondary mb-3 md:mb-4 drop-shadow-[0_0_10px_oklch(0.55_0.20_210)] md:drop-shadow-[0_0_15px_oklch(0.55_0.20_210)] group-hover:animate-glow" />
+                  <h3 className="font-semibold text-base md:text-lg mb-2">AI Automation</h3>
+                  <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
                     Autonomous agents validate, verify, and mint tokens with zero manual oversight
                   </p>
                 </div>
@@ -359,7 +359,7 @@ function App() {
                 <WalletButton />
               </div>
 
-              <p className="text-xs text-muted-foreground/60">
+              <p className="text-xs text-muted-foreground/60 px-2">
                 Demo Mode • Arc Testnet • Built for AI Agents x ARC Hackathon
               </p>
             </div>
@@ -371,7 +371,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-60">
         <Web3Background />
       </div>
       
@@ -379,10 +379,29 @@ function App() {
       
       <Navigation showTabs={true} activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main className="relative z-10 container mx-auto px-4 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <main className="relative z-10 container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 md:space-y-6">
+          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 h-auto glass-card p-1">
+            <TabsTrigger value="overview" className="gap-1 sm:gap-1.5 flex-col sm:flex-row py-2 sm:py-1.5 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+              <ChartLine size={16} className="sm:w-[18px] sm:h-[18px] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs leading-tight">Overview</span>
+            </TabsTrigger>
+            <TabsTrigger value="mint" className="gap-1 sm:gap-1.5 flex-col sm:flex-row py-2 sm:py-1.5 data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+              <Lightning size={16} className="sm:w-[18px] sm:h-[18px] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs leading-tight">Mint</span>
+            </TabsTrigger>
+            <TabsTrigger value="redeem" className="gap-1 sm:gap-1.5 flex-col sm:flex-row py-2 sm:py-1.5 data-[state=active]:bg-accent/20 data-[state=active]:text-accent">
+              <ArrowsLeftRight size={16} className="sm:w-[18px] sm:h-[18px] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs leading-tight">Redeem</span>
+            </TabsTrigger>
+            <TabsTrigger value="profile" className="gap-1 sm:gap-1.5 flex-col sm:flex-row py-2 sm:py-1.5 data-[state=active]:bg-secondary/20 data-[state=active]:text-secondary">
+              <UserCircle size={16} className="sm:w-[18px] sm:h-[18px] flex-shrink-0" />
+              <span className="text-[10px] sm:text-xs leading-tight">Profile</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="overview" className="space-y-4 md:space-y-6">
+            <div className="grid gap-3 sm:gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-4">
               <StatsCard
                 title="sARC Balance"
                 value={formatNumber(balance?.sarc || 0)}
@@ -418,47 +437,47 @@ function App() {
             <TransactionFeed transactions={transactions || []} />
           </TabsContent>
 
-          <TabsContent value="mint" className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
+          <TabsContent value="mint" className="space-y-4 md:space-y-6">
+            <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
               <EnergyInput onSubmit={handleMint} dailyUsed={dailyUsed} />
               {minting && <AgentStatus agents={agents} progress={progress} />}
             </div>
           </TabsContent>
 
-          <TabsContent value="redeem" className="space-y-6">
+          <TabsContent value="redeem" className="space-y-4 md:space-y-6">
             <div className="max-w-2xl mx-auto">
               <RedemptionForm balance={balance?.sarc || 0} onRedeem={handleRedeem} />
             </div>
           </TabsContent>
 
-          <TabsContent value="profile" className="space-y-6">
-            <div className="max-w-2xl mx-auto space-y-6">
-              <div className="glass-card p-6 border border-border/50">
-                <h3 className="text-lg font-semibold mb-4">Producer Profile</h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">System Capacity</span>
-                    <span className="font-semibold">{profile?.systemCapacity || 0} kW</span>
+          <TabsContent value="profile" className="space-y-4 md:space-y-6">
+            <div className="max-w-2xl mx-auto space-y-4 md:space-y-6">
+              <div className="glass-card p-4 md:p-6 border border-border/50">
+                <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">Producer Profile</h3>
+                <div className="space-y-3 md:space-y-4">
+                  <div className="flex justify-between py-2 md:py-3 border-b border-border/30 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">System Capacity</span>
+                    <span className="text-sm md:text-base font-semibold">{profile?.systemCapacity || 0} kW</span>
                   </div>
-                  <div className="flex justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Daily Cap</span>
-                    <span className="font-semibold">{profile?.dailyCap || 0} kWh</span>
+                  <div className="flex justify-between py-2 md:py-3 border-b border-border/30 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">Daily Cap</span>
+                    <span className="text-sm md:text-base font-semibold">{profile?.dailyCap || 0} kWh</span>
                   </div>
-                  <div className="flex justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Daily Used</span>
-                    <span className="font-semibold">{formatNumber(dailyUsed)} kWh</span>
+                  <div className="flex justify-between py-2 md:py-3 border-b border-border/30 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">Daily Used</span>
+                    <span className="text-sm md:text-base font-semibold">{formatNumber(dailyUsed)} kWh</span>
                   </div>
-                  <div className="flex justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Lifetime Energy</span>
-                    <span className="font-semibold">{formatNumber(profile?.totalGenerated || 0)} kWh</span>
+                  <div className="flex justify-between py-2 md:py-3 border-b border-border/30 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">Lifetime Energy</span>
+                    <span className="text-sm md:text-base font-semibold">{formatNumber(profile?.totalGenerated || 0)} kWh</span>
                   </div>
-                  <div className="flex justify-between py-3 border-b border-border/30">
-                    <span className="text-muted-foreground">Total Earned</span>
-                    <span className="font-semibold text-accent">{formatCurrency(profile?.totalEarned || 0)}</span>
+                  <div className="flex justify-between py-2 md:py-3 border-b border-border/30 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">Total Earned</span>
+                    <span className="text-sm md:text-base font-semibold text-accent">{formatCurrency(profile?.totalEarned || 0)}</span>
                   </div>
-                  <div className="flex justify-between py-3">
-                    <span className="text-muted-foreground">Member Since</span>
-                    <span className="font-semibold">
+                  <div className="flex justify-between py-2 md:py-3 gap-2">
+                    <span className="text-xs md:text-sm text-muted-foreground">Member Since</span>
+                    <span className="text-sm md:text-base font-semibold">
                       {new Date(profile?.joinedDate || Date.now()).toLocaleDateString()}
                     </span>
                   </div>
@@ -469,8 +488,8 @@ function App() {
         </Tabs>
       </main>
 
-      <footer className="relative z-10 border-t border-border/50 mt-12 py-6 glass-card">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+      <footer className="relative z-10 border-t border-border/50 mt-8 md:mt-12 py-4 md:py-6 glass-card">
+        <div className="container mx-auto px-3 sm:px-4 text-center text-xs md:text-sm text-muted-foreground">
           <p>Built for AI Agents x ARC with USDC Hackathon • Powered by Arc Blockchain</p>
         </div>
       </footer>
