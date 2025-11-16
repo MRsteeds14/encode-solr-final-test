@@ -36,12 +36,6 @@ interface GenerationRequest {
 
 // IPFS upload to Pinata
 async function uploadToIPFS(data: any, env: Env): Promise<string> {
-  // Skip IPFS if JWT is invalid/missing (for testing)
-  if (!env.PINATA_JWT || env.PINATA_JWT.length < 50) {
-    console.warn('Pinata JWT invalid/missing - using mock IPFS hash for testing');
-    return `QmMOCK${Date.now()}${Math.random().toString(36).substring(7)}`;
-  }
-
   const response = await fetch('https://api.pinata.cloud/pinning/pinJSONToIPFS', {
     method: 'POST',
     headers: {
@@ -131,7 +125,23 @@ export default {
       return new Response(null, { headers: corsHeaders });
     }
 
-    // Only accept POST
+    // Handle GET request for health check
+    if (request.method === 'GET') {
+      return new Response(
+        JSON.stringify({ 
+          status: 'healthy',
+          service: 'POG Agent',
+          timestamp: Date.now(),
+          version: '1.0.0'
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Only accept POST for generation requests
     if (request.method !== 'POST') {
       return new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
