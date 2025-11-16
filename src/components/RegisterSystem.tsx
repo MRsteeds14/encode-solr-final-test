@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { WalletButton } from '@/components/wallet/WalletButton';
 import Web3Background from '@/components/dashboard/Web3Background';
 import { GlowOrb } from '@/components/dashboard/GlowOrb';
+import { ethers } from 'ethers';
 
 interface RegisterSystemProps {
   walletAddress: string;
@@ -25,17 +26,112 @@ const FIXED_DAILY_CAP = 80; // kWh (10kW * 8 hours average)
 export function RegisterSystem({ walletAddress, onSuccess }: RegisterSystemProps) {
   const { register, isPending, data: txData } = useRegisterProducer();
   const [isWaitingForConfirmation, setIsWaitingForConfirmation] = useState(false);
+  const [pollingAttempts, setPollingAttempts] = useState(0);
+  const [txStatus, setTxStatus] = useState<string>('INITIATED');
 
-  // Listen for transaction confirmation
+  // Poll Circle API for transaction status
   useEffect(() => {
-    if (txData && isWaitingForConfirmation) {
-      // Transaction was mined, wait a bit for blockchain to update then navigate
-      toast.success('System registered successfully!');
-      setTimeout(() => {
-        onSuccess();
-      }, 3000);
+    if (!txData || !isWaitingForConfirmation) return;
+
+    const WORKER_URL = import.meta.env.VITE_CIRCLE_DEV_WALLET_WORKER_URL;
+    const transactionId = txData.txHash || txData.transaction?.id;
+    
+    if (!transactionId) {
+      console.error('❌ No transaction ID found');
+      return;
     }
-  }, [txData, isWaitingForConfirmation, onSuccess]);
+
+    let interval: NodeJS.Timeout;
+    let attempts = 0;
+    const maxAttempts = 60; // 2 minutes total (2 second intervals)
+
+    const checkTransactionStatus = async () => {
+      try {
+        attempts++;
+        setPollingAttempts(attempts);
+        
+        console.log(`🔍 Checking transaction status (attempt ${attempts}/${maxAttempts})...`);
+        
+        // Check Circle transaction status
+        const response = await fetch(`${WORKER_URL}/api/transactions/${transactionId}`);
+        const data = await response.json();
+        
+        if (data.success && data.transaction) {
+          const state = data.transaction.state;
+          setTxStatus(state);
+          
+          console.log(`📊 Transaction state: ${state}`);
+          
+          // Circle transaction states:
+          // INITIATED → QUEUED → SENT → CONFIRMED → COMPLETE
+          if (state === 'COMPLETE' || state === 'CONFIRMED') {
+            console.log('✅ Transaction confirmed by Circle!');
+            clearInterval(interval);
+            
+            // Wait a moment for registry to update, then verify
+            toast.success('Transaction confirmed! Verifying registration...');
+            
+            setTimeout(async () => {
+              try {
+                const provider = new ethers.JsonRpcProvider('https://rpc.testnet.arc.network');
+                const registry = new ethers.Contract(
+                  '0xc9559c5884e53548b3d2362aa694b64519d291ee',
+                  ['function isWhitelisted(address) view returns (bool)'],
+                  provider
+                );
+                
+                const isWhitelisted = await registry.isWhitelisted(walletAddress);
+                
+                if (isWhitelisted) {
+                  console.log('✅ Registration verified on-chain!');
+                  toast.success('Registration complete!');
+                  onSuccess();
+                } else {
+                  console.log('⏱️ Registry not updated yet, checking again...');
+                  // Try one more time after 3 seconds
+                  setTimeout(async () => {
+                    const recheck = await registry.isWhitelisted(walletAddress);
+                    if (recheck) {
+                      console.log('✅ Registration verified on second check!');
+                      toast.success('Registration complete!');
+                      onSuccess();
+                    } else {
+                      toast.error('Registration transaction succeeded but not showing in registry. Please refresh.');
+                    }
+                  }, 3000);
+                }
+              } catch (error) {
+                console.error('Error verifying registration:', error);
+                toast.error('Could not verify registration. Please refresh.');
+              }
+            }, 2000);
+          } else if (state === 'FAILED' || state === 'DENIED' || state === 'CANCELLED') {
+            console.error('❌ Transaction failed:', state);
+            clearInterval(interval);
+            toast.error(`Transaction ${state.toLowerCase()}. Please try again.`);
+            setIsWaitingForConfirmation(false);
+          }
+        }
+        
+        if (attempts >= maxAttempts) {
+          console.log('⏱️ Max polling attempts reached');
+          clearInterval(interval);
+          toast.error('Transaction taking longer than expected. Please check later and refresh.');
+          setIsWaitingForConfirmation(false);
+        }
+      } catch (error) {
+        console.error('Error checking transaction status:', error);
+      }
+    };
+
+    // Start polling every 2 seconds
+    checkTransactionStatus(); // Check immediately
+    interval = setInterval(checkTransactionStatus, 2000);
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [txData, isWaitingForConfirmation, walletAddress, onSuccess]);
 
   const handleRegister = async () => {
     try {
@@ -63,6 +159,14 @@ export function RegisterSystem({ walletAddress, onSuccess }: RegisterSystemProps
   };
 
   if (isWaitingForConfirmation && txData) {
+    const statusMessages: Record<string, string> = {
+      'INITIATED': 'Transaction initiated...',
+      'QUEUED': 'Transaction queued...',
+      'SENT': 'Transaction sent to blockchain...',
+      'CONFIRMED': 'Transaction confirmed! Verifying...',
+      'COMPLETE': 'Transaction complete! Loading dashboard...',
+    };
+
     return (
       <div className="min-h-screen bg-background relative overflow-hidden">
         {/* Navigation Bar */}
@@ -82,13 +186,23 @@ export function RegisterSystem({ walletAddress, onSuccess }: RegisterSystemProps
           <Web3Background />
           <div className="text-center space-y-6">
             <div className="relative inline-block">
-              <GlowOrb size={200} color="primary" className="mx-auto animate-glow" />
+              <GlowOrb size={200} color="primary" className="mx-auto animate-pulse" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <CheckCircle size={100} weight="fill" className="text-primary drop-shadow-[0_0_30px_oklch(0.65_0.25_265)]" />
               </div>
             </div>
-            <h2 className="text-3xl font-bold">Registration Complete!</h2>
-            <p className="text-muted-foreground">Loading your dashboard...</p>
+            <h2 className="text-3xl font-bold">Registering System</h2>
+            <div className="space-y-2">
+              <p className="text-muted-foreground">
+                {statusMessages[txStatus] || 'Processing transaction...'}
+              </p>
+              <p className="text-sm text-muted-foreground/60">
+                Status: <span className="font-mono text-primary">{txStatus}</span>
+              </p>
+              <p className="text-xs text-muted-foreground/60">
+                Check {pollingAttempts} / 60
+              </p>
+            </div>
             <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto" />
           </div>
         </div>

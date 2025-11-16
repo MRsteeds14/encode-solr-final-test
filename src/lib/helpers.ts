@@ -43,11 +43,33 @@ export function generateEnergyData(days: number = 30): Array<{ date: string; kwh
   const data: Array<{ date: string; kwh: number }> = []
   const today = new Date()
   
+  // California 10kW system production profile
+  // Based on NREL data for Southern California (San Diego area)
+  // Annual: ~14,000 kWh, Daily average: ~38 kWh
+  // Summer peak: 50-65 kWh, Winter low: 20-35 kWh
+  
   for (let i = days - 1; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(date.getDate() - i)
     
-    const kwh = Math.floor(Math.random() * 30) + 40
+    // Seasonal variation (higher in summer, lower in winter)
+    const month = date.getMonth(); // 0 = Jan, 11 = Dec
+    const seasonalFactor = 1 + 0.4 * Math.sin((month - 2) * Math.PI / 6); // Peak in June, low in December
+    
+    // Weekly variation (slightly higher on weekends for residential)
+    const dayOfWeek = date.getDay();
+    const weekendBoost = (dayOfWeek === 0 || dayOfWeek === 6) ? 1.05 : 1.0;
+    
+    // Random daily weather variation (clouds, fog)
+    const weatherVariation = 0.8 + Math.random() * 0.4; // 80% to 120%
+    
+    // Base 38 kWh/day * seasonal * weekend * weather
+    const baseProduction = 38;
+    let kwh = baseProduction * seasonalFactor * weekendBoost * weatherVariation;
+    
+    // Add some realistic noise
+    kwh = Math.max(15, Math.min(70, kwh)); // Cap between 15-70 kWh
+    kwh = Math.round(kwh * 10) / 10; // Round to 1 decimal
     
     data.push({
       date: date.toISOString().split('T')[0],

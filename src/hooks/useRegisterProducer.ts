@@ -1,14 +1,20 @@
 /**
  * Hook to register a new solar producer
- * Handles the registration transaction with proper confirmation
+ * Uses Circle Developer-Controlled Wallets
  */
 
-import { useSendTransaction } from 'thirdweb/react';
-import { prepareContractCall, waitForReceipt } from 'thirdweb';
-import { registryContract } from '@/lib/contracts';
+import { useState } from 'react';
+import { signAndSendTransaction } from '@/lib/circle-contracts';
+import { CONTRACT_ADDRESSES } from '@/lib/contracts';
+import { useCircleWallet } from './useCircleWallet';
 
 export function useRegisterProducer() {
-  const { mutate: sendTx, isPending, isSuccess, isError, error, data } = useSendTransaction();
+  const { wallet } = useCircleWallet();
+  const [isPending, setIsPending] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const [data, setData] = useState<any>(null);
 
   const register = async (
     producerAddress: string,
@@ -16,27 +22,37 @@ export function useRegisterProducer() {
     dailyCapKwh: number,
     ipfsMetadata: string = ''
   ) => {
-    const transaction = prepareContractCall({
-      contract: registryContract,
-      method: 'function registerProducer(address, uint256, uint256, string)',
-      params: [
-        producerAddress,
-        BigInt(systemCapacityKw),
-        BigInt(dailyCapKwh),
-        ipfsMetadata,
-      ],
-    });
+    if (!wallet) {
+      throw new Error('Wallet not connected');
+    }
 
-    return new Promise((resolve, reject) => {
-      sendTx(transaction, {
-        onSuccess: (result) => {
-          resolve(result);
-        },
-        onError: (error) => {
-          reject(error);
-        }
-      });
-    });
+    setIsPending(true);
+    setIsError(false);
+    setError(null);
+
+    try {
+      const result = await signAndSendTransaction(
+        wallet.id,
+        CONTRACT_ADDRESSES.REGISTRY,
+        'registerProducer',
+        [
+          producerAddress,
+          BigInt(systemCapacityKw),
+          BigInt(dailyCapKwh),
+          ipfsMetadata,
+        ]
+      );
+
+      setData(result);
+      setIsSuccess(true);
+      return result;
+    } catch (err: any) {
+      setIsError(true);
+      setError(err);
+      throw err;
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return {

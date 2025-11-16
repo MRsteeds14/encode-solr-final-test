@@ -1,0 +1,18 @@
+{
+  "name": "circle-dev-wallet-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker for Circle Developer-Controlled Wallets with SCA support",
+  "main": "index.ts",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@circle-fin/circle-sdk": "^2.9.0",
+    "@circle-fin/developer-controlled-wallets": "^9.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.94.0"
+  }
+}

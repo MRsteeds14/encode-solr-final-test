@@ -79,7 +79,7 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
               placeholder="0.00"
               min="0"
               step="0.01"
-              disabled={loading || balance === 0}
+              disabled={loading}
               className="bg-background/50 border-border/50 focus:border-accent focus:ring-accent text-base pr-16"
             />
             <Button
@@ -87,7 +87,7 @@ export function RedemptionForm({ balance, onRedeem }: RedemptionFormProps) {
               size="sm"
               className="absolute right-2 top-1/2 -translate-y-1/2 h-6 md:h-7 text-xs md:text-sm text-accent hover:text-accent/80"
               onClick={() => setAmount(balance.toString())}
-              disabled={loading || balance === 0}
+              disabled={loading || balance <= 0}
             >
               MAX
             </Button>

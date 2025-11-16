@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 # Environment variables (public)
 [vars]
 ARC_RPC_URL = "https://rpc.testnet.arc.network"
-MINTING_CONTROLLER_ADDRESS = "0xf84748FDDeE07b4d4d483c6291D0D3E97aD61d00"
+MINTING_CONTROLLER_ADDRESS = "0x37b4419D1B2AbD52F48C335621a64b944d979462"
 REGISTRY_ADDRESS = "0xc9559c5884e53548b3d2362aa694b64519d291ee"
 ARC_CHAIN_ID = "5042002"
 

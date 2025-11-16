@@ -7,15 +7,22 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+// Interface for sARC token burn functionality
+interface ISARCToken {
+    function burnFrom(address from, uint256 amount) external;
+}
+
 /**
  * @title Treasury
  * @notice Manages sARC → USDC redemptions with exchange rate management
  * @dev Handles decimal conversion (18-decimal sARC to 18-decimal USDC on Arc)
+ * @dev Burns sARC tokens on redemption (deflationary model)
  */
 contract Treasury is AccessControl, Pausable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
 
     IERC20 public immutable sarcToken;
     IERC20 public immutable usdcToken;
@@ -63,6 +70,7 @@ contract Treasury is AccessControl, Pausable, ReentrancyGuard {
 
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(OPERATOR_ROLE, msg.sender);
+        _grantRole(BURNER_ROLE, msg.sender);
     }
 
     /**
@@ -96,8 +104,11 @@ contract Treasury is AccessControl, Pausable, ReentrancyGuard {
         uint256 treasuryBalance = usdcToken.balanceOf(address(this));
         require(treasuryBalance >= usdcAmount, "Insufficient Treasury balance");
 
-        // Burn sARC tokens (transfer to Treasury, then Treasury burns or holds)
+        // Transfer sARC to Treasury first (required before burning)
         sarcToken.safeTransferFrom(msg.sender, address(this), _sarcAmount);
+
+        // Burn sARC tokens (permanently destroy, reduces totalSupply)
+        ISARCToken(address(sarcToken)).burnFrom(address(this), _sarcAmount);
 
         // Transfer USDC to user
         usdcToken.safeTransfer(msg.sender, usdcAmount);

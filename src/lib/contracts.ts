@@ -8,10 +8,10 @@ import { client } from './thirdweb-client';
 import { arcTestnet } from './chains';
 
 const FALLBACK_CONTRACT_ADDRESSES = {
-  SARC_TOKEN: '0x9604ad29C8fEe0611EcE73a91e192E5d976E2184',
+  SARC_TOKEN: '0x7236189Af42df73cea4555Ee789DE5e4CF1572Ae',
   REGISTRY: '0xc9559c5884e53548b3d2362aa694b64519d291ee', // RegistryV2 - with pre-configured roles
-  TREASURY: '0x8825518674A89e28d2C11CA0Ec49024ef6e1E2b2',
-  MINTING_CONTROLLER: '0xf84748FDDeE07b4d4d483c6291D0D3E97aD61d00',
+  TREASURY: '0xBA1C6bEeA844Cf921a8c2720bf438AbcE22b5C15',
+  MINTING_CONTROLLER: '0x37b4419D1B2AbD52F48C335621a64b944d979462',
 } as const;
 
 function getEnvAddress(key: string, fallback: string) {
@@ -21,7 +21,7 @@ function getEnvAddress(key: string, fallback: string) {
 
 // Contract Addresses resolved from environment (fallback to known deployments)
 export const CONTRACT_ADDRESSES = {
-  SARC_TOKEN: getEnvAddress('VITE_SARC_TOKEN', FALLBACK_CONTRACT_ADDRESSES.SARC_TOKEN),
+  SARC_TOKEN: getEnvAddress('VITE_SARC_TOKEN_ADDRESS', FALLBACK_CONTRACT_ADDRESSES.SARC_TOKEN),
   REGISTRY: getEnvAddress('VITE_REGISTRY_ADDRESS', FALLBACK_CONTRACT_ADDRESSES.REGISTRY),
   TREASURY: getEnvAddress('VITE_TREASURY_ADDRESS', FALLBACK_CONTRACT_ADDRESSES.TREASURY),
   MINTING_CONTROLLER: getEnvAddress(

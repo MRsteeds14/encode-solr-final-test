@@ -3,30 +3,75 @@
  * Manages solar producer registration and validation
  */
 
-import { useReadContract, useSendTransaction } from 'thirdweb/react';
-import { prepareContractCall } from 'thirdweb';
-import { registryContract } from '@/lib/contracts';
+import { useState, useEffect } from 'react';
+import { getRegistryContract } from '@/lib/circle-contracts';
 
 /**
  * Check if an address is whitelisted as a solar producer
  */
 export function useIsWhitelisted(address: string | undefined) {
-  return useReadContract({
-    contract: registryContract,
-    method: 'function isWhitelisted(address) view returns (bool)',
-    params: address ? [address] : undefined,
-  } as any);
+  const [data, setData] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const contract = getRegistryContract();
+        const result = await contract.isWhitelisted(address);
+        setData(result);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [address]);
+
+  return { data, isLoading, error };
 }
 
 /**
  * Get full producer profile
  */
 export function useProducerProfile(address: string | undefined) {
-  return useReadContract({
-    contract: registryContract,
-    method: 'function getProducer(address) view returns (tuple(bool isWhitelisted, uint256 systemCapacityKw, uint256 dailyCapKwh, uint256 totalMinted, uint256 lastMintTimestamp, string ipfsMetadata, uint256 registrationDate))',
-    params: address ? [address] : undefined,
-  } as any);
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const contract = getRegistryContract();
+        const result = await contract.getProducer(address);
+        setData({
+          isWhitelisted: result[0],
+          systemCapacityKw: result[1],
+          dailyCapKwh: result[2],
+          totalMinted: result[3],
+          lastMintTimestamp: result[4],
+          ipfsMetadata: result[5],
+          registrationDate: result[6],
+        });
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [address]);
+
+  return { data, isLoading, error };
 }
 
 /**
@@ -36,44 +81,28 @@ export function useValidateDailyProduction(
   address: string | undefined,
   kwhAmount: bigint | undefined
 ) {
-  return useReadContract({
-    contract: registryContract,
-    method: 'function validateDailyProduction(address, uint256) view returns (bool isValid, string reason)',
-    params: address && kwhAmount ? [address, kwhAmount] : undefined,
-  } as any);
-}
+  const [data, setData] = useState<{ isValid: boolean; reason: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-/**
- * Register a new solar producer (for demo purposes)
- */
-export function useRegisterProducer() {
-  const { mutate: sendTx, isPending, isSuccess, isError, error } = useSendTransaction();
+  useEffect(() => {
+    if (!address || !kwhAmount) return;
 
-  const registerProducer = async (
-    producerAddress: string,
-    systemCapacityKw: number,
-    dailyCapKwh: number,
-    ipfsMetadata: string
-  ) => {
-    const transaction = prepareContractCall({
-      contract: registryContract,
-      method: 'function registerProducer(address, uint256, uint256, string)',
-      params: [
-        producerAddress,
-        BigInt(systemCapacityKw),
-        BigInt(dailyCapKwh),
-        ipfsMetadata,
-      ],
-    });
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const contract = getRegistryContract();
+        const result = await contract.validateDailyProduction(address, kwhAmount);
+        setData({ isValid: result[0], reason: result[1] });
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    return sendTx(transaction);
-  };
+    fetchData();
+  }, [address, kwhAmount]);
 
-  return {
-    registerProducer,
-    isPending,
-    isSuccess,
-    isError,
-    error,
-  };
+  return { data, isLoading, error };
 }

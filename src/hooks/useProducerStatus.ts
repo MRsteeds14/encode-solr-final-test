@@ -3,8 +3,8 @@
  * Returns registration status and producer data
  */
 
-import { useReadContract } from 'thirdweb/react';
-import { registryContract } from '@/lib/contracts';
+import { useState, useEffect, useCallback } from 'react';
+import { getRegistryContract } from '@/lib/circle-contracts';
 
 export interface ProducerData {
   isWhitelisted: boolean;
@@ -20,54 +20,62 @@ export interface ProducerData {
  * Check producer registration status and get their data
  */
 export function useProducerStatus(address: string | undefined) {
-  // Primary check: Get full producer data
-  const producerResult = useReadContract({
-    contract: registryContract,
-    method: 'function getProducer(address) view returns (tuple(bool isWhitelisted, uint256 systemCapacityKw, uint256 dailyCapKwh, uint256 totalMinted, uint256 lastMintTimestamp, string ipfsMetadata, uint256 registrationDate))',
-    params: address ? [address] : undefined,
-  } as any);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [producerData, setProducerData] = useState<ProducerData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
 
-  // Fallback check: Simple whitelist check
-  const whitelistResult = useReadContract({
-    contract: registryContract,
-    method: 'function isWhitelisted(address) view returns (bool)',
-    params: address ? [address] : undefined,
-  } as any);
+  const fetchData = useCallback(async (retryCount = 0) => {
+    if (!address) return;
 
-  // Debug logging
-  if (address && !producerResult.isLoading && !whitelistResult.isLoading) {
-    console.log('🔍 Checking registration for:', address);
-    console.log('Producer data:', producerResult.data);
-    console.log('Whitelist status:', whitelistResult.data);
-    console.log('Producer error:', producerResult.error);
-    console.log('Whitelist error:', whitelistResult.error);
-  }
+    setIsLoading(true);
+    try {
+      const contract = getRegistryContract();
+      
+      // Get full producer data - returns a struct/tuple
+      const result = await contract.getProducer(address);
+      
+      // The result is a struct with named properties
+      const data: ProducerData = {
+        isWhitelisted: result.isWhitelisted || result[0],
+        systemCapacityKw: result.systemCapacityKw || result[1],
+        dailyCapKwh: result.dailyCapKwh || result[2],
+        totalMinted: result.totalMinted || result[3],
+        lastMintTimestamp: result.lastMintTimestamp || result[4],
+        ipfsMetadata: result.ipfsMetadata || result[5] || '',
+        registrationDate: result.registrationDate || result[6],
+      };
 
-  // Parse the data if available
-  const producerData: ProducerData | null = producerResult.data ? {
-    isWhitelisted: producerResult.data[0],
-    systemCapacityKw: producerResult.data[1],
-    dailyCapKwh: producerResult.data[2],
-    totalMinted: producerResult.data[3],
-    lastMintTimestamp: producerResult.data[4],
-    ipfsMetadata: producerResult.data[5],
-    registrationDate: producerResult.data[6],
-  } : null;
+      setProducerData(data);
+      setIsRegistered(data.isWhitelisted);
+      setError(null); // Clear any previous errors
+      
+      console.log('🔍 Producer status for', address, ':', data);
+    } catch (err: any) {
+      console.error('❌ Failed to fetch producer status (attempt', retryCount + 1, '):', err);
+      
+      // Retry with exponential backoff (max 3 attempts)
+      if (retryCount < 2) {
+        const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s, 4s
+        console.log(`⏳ Retrying in ${delay}ms...`);
+        setTimeout(() => fetchData(retryCount + 1), delay);
+      } else {
+        setError(err);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [address]);
 
-  // Determine registration status
-  // Use whitelist check as primary source, fallback to producer data
-  const isRegistered = whitelistResult.data === true || producerData?.isWhitelisted === true;
-
-  console.log('✅ Final isRegistered status:', isRegistered);
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return {
     isRegistered,
     producerData,
-    isLoading: producerResult.isLoading || whitelistResult.isLoading,
-    error: producerResult.error || whitelistResult.error,
-    refetch: async () => {
-      await producerResult.refetch();
-      await whitelistResult.refetch();
-    },
+    isLoading,
+    error,
+    refetch: fetchData,
   };
 }

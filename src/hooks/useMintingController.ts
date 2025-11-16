@@ -3,38 +3,100 @@
  * Manages sARC token minting operations
  */
 
-import { useReadContract } from 'thirdweb/react';
-import { mintingControllerContract } from '@/lib/contracts';
+import { useState, useEffect } from 'react';
+import { getMintingControllerContract, getMintingStats as fetchMintingStats, getProducerMintingStats } from '@/lib/circle-contracts';
 
 /**
  * Check if circuit breaker is triggered
  */
 export function useCircuitBreakerStatus() {
-  return useReadContract({
-    contract: mintingControllerContract,
-    method: 'function circuitBreakerTriggered() view returns (bool)',
-  });
+  const [data, setData] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const contract = getMintingControllerContract();
+        const result = await contract.circuitBreakerTriggered();
+        setData(result);
+      } catch (err: any) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  return { data, isLoading, error };
 }
 
 /**
  * Get current minting statistics
  */
 export function useMintingStats() {
-  return useReadContract({
-    contract: mintingControllerContract,
-    method: 'function getMintingStats() view returns (uint256 todayMinted, uint256 dailyRemaining, uint256 allTimeMinted, bool breakerStatus)',
-  });
+  const [data, setData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const stats = await fetchMintingStats();
+        setData({
+          todayMinted: stats.todayMinted,
+          dailyRemaining: stats.dailyRemaining,
+          allTimeMinted: stats.allTimeMinted,
+          breakerStatus: stats.breakerStatus,
+        });
+      } catch (err: any) {
+        console.error('❌ Failed to fetch minting stats:', err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return { data, isLoading, error };
 }
 
 /**
  * Get producer-specific minting stats
  */
 export function useProducerStats(address: string | undefined) {
-  return useReadContract({
-    contract: mintingControllerContract,
-    method: 'function getProducerStats(address) view returns (uint256)',
-    params: address ? [address] : undefined,
-  } as any);
+  const [data, setData] = useState<bigint>(0n);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!address) return;
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const stats = await getProducerMintingStats(address);
+        setData(stats.totalMinted);
+      } catch (err: any) {
+        console.error('❌ Failed to fetch producer stats:', err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [address]);
+
+  return { data, isLoading, error };
 }
 
 /**

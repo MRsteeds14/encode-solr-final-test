@@ -15,6 +15,7 @@ interface IRegistry {
 
 interface ISARCToken {
     function mint(address to, uint256 amount) external;
+    function burnFrom(address from, uint256 amount) external;
     function totalSupply() external view returns (uint256);
 }
 
@@ -29,6 +30,7 @@ contract MintingController is AccessControl, Pausable, ReentrancyGuard {
 
     IRegistry public registry;
     ISARCToken public sarcToken;
+    bool public tokenLocked;
 
     // Minting rate: 1 kWh = 1 sARC (both 18 decimals)
     uint256 public constant KWH_TO_SARC_RATE = 1e18;
@@ -57,6 +59,8 @@ contract MintingController is AccessControl, Pausable, ReentrancyGuard {
     event CircuitBreakerReset(address indexed admin);
     event MaxDailyMintUpdated(uint256 oldMax, uint256 newMax);
     event AnomalyThresholdUpdated(uint256 oldThreshold, uint256 newThreshold);
+    event TokenUpdated(address indexed oldToken, address indexed newToken);
+    event TokenLocked(address indexed admin);
 
     /**
      * @notice Constructor
@@ -204,6 +208,29 @@ contract MintingController is AccessControl, Pausable, ReentrancyGuard {
     function setRegistry(address _newRegistry) external onlyRole(DEFAULT_ADMIN_ROLE) {
         require(_newRegistry != address(0), "Invalid address");
         registry = IRegistry(_newRegistry);
+    }
+
+    /**
+     * @notice Update the sARC token contract address
+     * @dev Only callable by DEFAULT_ADMIN_ROLE. Token can be locked permanently.
+     */
+    function setSarcToken(address _newToken) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(!tokenLocked, "Token is locked");
+        require(_newToken != address(0), "Invalid token address");
+
+        address old = address(sarcToken);
+        sarcToken = ISARCToken(_newToken);
+
+        emit TokenUpdated(old, _newToken);
+    }
+
+    /**
+     * @notice Lock the sARC token address forever
+     */
+    function lockSarcToken() external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(!tokenLocked, "Already locked");
+        tokenLocked = true;
+        emit TokenLocked(msg.sender);
     }
 
     /**

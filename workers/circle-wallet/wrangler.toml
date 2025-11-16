@@ -1,0 +1,20 @@
+# Cloudflare Worker Configuration for Circle Wallet Backend
+name = "circle-wallet-worker"
+main = "index.ts"
+compatibility_date = "2024-11-15"
+
+# Worker type
+workers_dev = true
+
+# Environment variables (public)
+[vars]
+CIRCLE_API_BASE = "https://api.circle.com/v1/w3s"
+
+# Secrets (set via: wrangler secret put <KEY>)
+# CIRCLE_API_KEY - Your Circle API Key
+# CIRCLE_ENTITY_SECRET - Your Circle Entity Secret
+
+# Usage commands:
+# wrangler secret put CIRCLE_API_KEY
+# wrangler secret put CIRCLE_ENTITY_SECRET
+# wrangler deploy
